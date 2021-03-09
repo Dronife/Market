@@ -1,15 +1,22 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use app\helper\itemTable;
 use App\Services\ItemFactory;
 use App\Models\Item;
-use App\helper\itemFormHelper;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 
+use App\helper\ViewTemplateHelper;
+
+
+
+
 class itemController extends Controller
 {
+    
    
 
     /**
@@ -19,9 +26,8 @@ class itemController extends Controller
      */
     public function index()
     {
-        $items = Item::get();
-        // dd($items);
-        return view('home', ['items'=>$items,'header' => 'Global items']);
+       
+        return (new ViewTemplateHelper)->getAllItemTable('/home','Global item list');
     }
 
     /**
@@ -31,7 +37,7 @@ class itemController extends Controller
      */
     public function create()
     {
-        
+        return (new ViewTemplateHelper)->getItemForm('/item/store/', 'itemform',-1);
     }
 
     /**
@@ -59,8 +65,17 @@ class itemController extends Controller
     public function show()
     {
         
-        $items = Item::where('user_id',Auth::user()->id)->get();
-        return view('home',['items'=>$items, 'header' => 'Your submited items']);
+       $id = Auth::user()->id;
+        return (new ViewTemplateHelper)->itemByIndexTable('/home','Your item list',$id);
+
+
+    }
+
+
+    public function topThree()
+    {
+        
+        return (new ViewTemplateHelper)->itemTop3('/home','Top 3');
 
 
     }
@@ -73,8 +88,8 @@ class itemController extends Controller
      */
     public function edit($id)
     {
-       
-        return (new ItemFormHelper)->getParamsToView('/item/update/'.$id, 'itemform',$id);
+    
+        return (new ViewTemplateHelper)->getItemForm('/item/update/'.$id, 'itemform',$id);
     }
 
     /**

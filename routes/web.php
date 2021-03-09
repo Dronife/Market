@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\helper\itemFormHelper;
+use App\helper\ItemViewHelper;
 //use App\Http\Controllers\Auth;
 
 /*
@@ -15,6 +15,8 @@ use App\helper\itemFormHelper;
 |
 */
 
+
+
 Route::get('/', function () {
     return view('auth.login');
 });
@@ -26,9 +28,11 @@ Route::group(['middleware' => 'auth'], function() {
     Route::group(['prefix' => 'item'], function() {
 
         
-        Route::get('/create', function () {return (new ItemFormHelper)->getParamsToView('/iten/store/', 'itemform',-1);;});
+        //Route::get('/create', function () {return (new ItemViewHelper)->ItemFormView('/iten/store/', 'itemform',-1);;});
 
 
+        Route::get('/top3', [App\Http\Controllers\itemController::class, 'topThree']);
+        Route::get('/create', [App\Http\Controllers\itemController::class, 'create']);
         Route::post('/update/{id}', [App\Http\Controllers\itemController::class, 'update']);
         Route::post('/edit/{id}', [App\Http\Controllers\itemController::class, 'edit']);
         Route::post('/delete/{id}', [App\Http\Controllers\itemController::class, 'delete']);

@@ -41,7 +41,7 @@
                             <a class="nav-link" href="{{url('/item/list/')}}">Your items</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Top 3 items</a>
+                            <a class="nav-link" href="{{url('/item/top3')}}">Top 3 items</a>
                         </li>
 
                     </ul>
