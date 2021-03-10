@@ -4,6 +4,11 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\helper\ViewTemplateInterface\itemTable;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Notification;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,7 +19,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-      
     }
 
     /**
@@ -24,6 +28,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        view()->composer('*', function ($view) {
+            if (Auth::check()) {
+                $user_id = Auth::user()->id;
+                if ($user_id != null) {
+                    $user = User::find($user_id);
+                    $notifications = $user->unreadNotifications->slice(0,1);
+                    $view->with('notifications', $notifications);
+                }
+            }else
+            $view->with('notifications', null);
+        });
     }
 }

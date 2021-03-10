@@ -3,7 +3,8 @@ namespace App\Services;
 use App\Models\Item;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-
+use App\Events\CreatedNewCheapestItem;
+use App\helper\HeapSort;
 
 class anItem{
 
@@ -29,7 +30,9 @@ class anItem{
         $newItem = ($doesItemExists === null) 
         ? Item::create(['user_id'=> $this->userId, 'name'=> $this->name, 'price'=> $this->price]) 
         : anItem::Update($doesItemExists->id);
-       
+        
+        anItem::checkIfItemIsCheapest($newItem);
+
         return $newItem;
     }
 
@@ -38,6 +41,16 @@ class anItem{
         $item->Update(['price'=> $this->price,'user_id'=> $this->userId]);
         return $item;
     }
+
+    public function checkIfItemIsCheapest($newItem){
+        
+        $firstItem = (new HeapSort)->GetFirst();
+        if( $firstItem[0]->id == $newItem->id){
+            event(new CreatedNewCheapestItem($newItem));
+        }
+
+    }
+
 }
 
 class ItemFactory

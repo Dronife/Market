@@ -6,9 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>SB Admin 2 - Dashboard</title>
+    <title>Market</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{asset('plugin/vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
@@ -29,7 +29,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-               
+
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav pl-5 ">
@@ -92,6 +92,20 @@
                 </div>
             </div>
         </nav>
+        @if($notifications != null)
+        <div class="row justify-content-center">
+            @forelse($notifications as $notification)
+            <div class="alert alert-success alert-dismissible fade show col-md-5 " role="alert">
+            Cheapest item is <strong>{{$notification->data['name']}}</strong>, which costs <strong>{{$notification->data['price']}}</strong>
+                <button data-id="{{$notification->id}}" type="button" class="close mark-as-read" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @empty
+            @endforelse
+        </div>
+        @endif
+
 
         <main class="py-4">
             @yield('content')
@@ -114,6 +128,39 @@
     <!-- Page level custom scripts -->
     <script src="{{asset('plugin/js/demo/chart-area-demo.js')}}"></script>
     <script src="{{asset('plugin/js/demo/chart-pie-demo.js')}}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+
+            function sendMarkRequest(id = null) {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax("{{url('/item/markAsRead/{id}')}}",{
+                    // url: '/item/markAsRead/' + id,
+                    method: 'POST',
+                    data: {
+                         id
+                    }
+                });
+            }
+
+
+            $(function() {
+                $('.mark-as-read').click(function() {
+                    // alert();
+                    var id = $(this).data('id');
+                    sendMarkRequest(id);
+                })
+            });
+
+        });
+    </script>
+
+
 </body>
 
 </html>

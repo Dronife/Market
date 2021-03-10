@@ -2,10 +2,24 @@
 
 namespace app\helper;
 
+use App\Models\Item;
+
+
 class HeapSort
 {
-    public function sort(&$collection, $n)
+
+
+    public function GetFirst(){
+        $collection = HeapSort::sort();
+        return $collection->slice(0,1);
+    }
+
+
+
+    public function sort()
     {
+        $collection = Item::get();
+        $n = $collection->count();
 
         for ($i = (int)($n / 2); $i >= 0; $i--) {
             HeapSort::heapify($collection, $n - 1, $i);
@@ -19,6 +33,8 @@ class HeapSort
             //exclude the last element from the heap and rebuild the heap 
             HeapSort::heapify($collection, $i-1, 0);
           }
+
+          return $collection;
     }
 
 

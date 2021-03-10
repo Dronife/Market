@@ -8,7 +8,7 @@
             <div class="card">
 
                 <div class="card-header">Are you sure you want to delete?</div>
-                @if($userid == $item->user_id)
+                @if($userid != $item->user_id)
                 <div class="card-body">
                     
                     <div class="row justify-content-center p-2">

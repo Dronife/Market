@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\helper\ItemViewHelper;
+use App\Http\Controllers\itemController;
+
 //use App\Http\Controllers\Auth;
 
 /*
@@ -30,7 +32,7 @@ Route::group(['middleware' => 'auth'], function() {
         
         //Route::get('/create', function () {return (new ItemViewHelper)->ItemFormView('/iten/store/', 'itemform',-1);;});
 
-
+        Route::post('/markAsRead/{id}', [App\Http\Controllers\itemController::class, 'markNotification']);
         Route::get('/top3', [App\Http\Controllers\itemController::class, 'topThree']);
         Route::get('/create', [App\Http\Controllers\itemController::class, 'create']);
         Route::post('/update/{id}', [App\Http\Controllers\itemController::class, 'update']);

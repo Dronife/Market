@@ -2,6 +2,7 @@
 
 namespace app\helper;
 use App\Models\Item;
+use App\Models\Notification;
 use App\helper\HeapSort;
 
 
@@ -67,9 +68,8 @@ class itemTop3 extends itemTable{
     }
 
     public function getView(){
-        $items = Item::get();
-        $count = Item::get()->count();
-        (new HeapSort)->sort($items, $count);
+        
+        $items = (new HeapSort)->sort();
         return view($this->view,['header'=>$this->header , 'items' =>($items->slice(0,3))]);
     }
 }

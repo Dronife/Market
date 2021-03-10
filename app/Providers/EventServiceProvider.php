@@ -2,31 +2,43 @@
 
 namespace App\Providers;
 
+
+use App\Listeners\SendItemNotifications;
 use Illuminate\Auth\Events\Registered;
+use App\Events\CreatedNewCheapestItem;
+use App\Listeners\SendCheapestItemNotification;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
-    /**
-     * The event listener mappings for the application.
-     *
-     * @var array
-     */
+    
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        CreatedNewCheapestItem::class => [
+            SendCheapestItemNotification::class,
+        ],
+
+        
     ];
 
-    /**
-     * Register any events for your application.
-     *
-     * @return void
-     */
+    
+
+    
     public function boot()
     {
-        //
+        
+
+        // Event::listen(function (ItemInsertProcessed $event) {
+        // });
+    }
+
+
+    public function shouldDiscoverEvents()
+    {
+        return true;
     }
 }
