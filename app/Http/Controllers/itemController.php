@@ -37,7 +37,7 @@ class itemController extends Controller
     public function store(Request $request)
     {
      
-        $newItem = ItemFactory::create($request);
+        ItemFactory::create($request);
        
  
         return redirect()->to('/home');
@@ -70,11 +70,10 @@ class itemController extends Controller
     }
 
 
-    public function markNotification($id){
+    public function markNotification(){
 
         
         auth()->user()->unreadNotifications->markAsRead();
-        auth()->user()->notifications->delete();
     }
     
     public function update(Request $request, $id)

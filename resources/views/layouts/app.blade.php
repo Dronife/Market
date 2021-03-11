@@ -9,7 +9,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>Market</title>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- Custom fonts for this template-->
     <link href="{{asset('plugin/vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
@@ -93,16 +93,8 @@
             </div>
         </nav>
         @if($notifications != null)
-        <div class="row justify-content-center">
-            @forelse($notifications as $notification)
-            <div class="alert alert-success alert-dismissible fade show col-md-5 " role="alert">
-            Cheapest item is <strong>{{$notification->data['name']}}</strong>, which costs <strong>{{$notification->data['price']}}</strong>
-                <button data-id="{{$notification->id}}" type="button" class="close mark-as-read" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            @empty
-            @endforelse
+        <div class="row justify-content-center notifications">
+            @include('layouts.notification')
         </div>
         @endif
 
@@ -128,32 +120,33 @@
     <!-- Page level custom scripts -->
     <script src="{{asset('plugin/js/demo/chart-area-demo.js')}}"></script>
     <script src="{{asset('plugin/js/demo/chart-pie-demo.js')}}"></script>
+    <script src="{{asset('https://js.pusher.com/7.0/pusher.min.js')}}"></script>
+    <script src="{{asset('plugin/js/pusher/ReloadData.js')}}"></script>
+    <script > Reload('cheapesItemCreatedChannel','cheapestItem','/item/notifications','.notifications'); </script>
+
+    
 
     <script type="text/javascript">
         $(document).ready(function() {
 
-
+            
             function sendMarkRequest(id = null) {
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
-                $.ajax("{{url('/item/markAsRead/{id}')}}",{
-                    // url: '/item/markAsRead/' + id,
+
+                $.ajax({
+                    url: '/item/markAsRead/',
                     method: 'POST',
-                    data: {
-                         id
-                    }
                 });
             }
 
 
             $(function() {
                 $('.mark-as-read').click(function() {
-                    // alert();
-                    var id = $(this).data('id');
-                    sendMarkRequest(id);
+                    sendMarkRequest();
                 })
             });
 
