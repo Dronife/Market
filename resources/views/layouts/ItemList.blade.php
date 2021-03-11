@@ -2,6 +2,9 @@
     <thead class="table-dark">
         <tr>
             <th>
+
+            </th>
+            <th>
                 Name
             </th>
             <th>
@@ -10,11 +13,17 @@
             <th style="width: 30%">
                 Action
             </th>
+
         </tr>
     </thead>
     <tbody>
         @foreach($items as $key => $item)
         <tr>
+            <td>
+                @if($item->user_id == Auth::user()->id)
+                <input name="checkToDelete[]" value={{$item->id}} type="checkbox">
+                @endif
+            </td>
             <td>
                 {{$item->name}}
             </td>
@@ -25,11 +34,11 @@
                 @if($item->user_id == Auth::user()->id)
 
                 <div class="row justify-content-center">
-                    <form action="{{ url('/item/delete/'.$item->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ url('/item/delete/') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="pb-1 pr-1">
 
-                            <button style="width: 35px;" type="submit" class="btn btn-outline-danger btn-sm">
+                            <button onClick="return confirm('Are you sure you want to delete?')" name="checkToDelete[]" value={{$item->id}} style="width: 35px;" type="submit" class="btn btn-outline-danger btn-sm">
                                 <i class="fa fa-trash"></i>
                             </button>
                         </div>
@@ -52,4 +61,3 @@
         @endforeach
     </tbody>
 </table>
-

@@ -42,8 +42,8 @@ Route::group(['middleware' => 'auth'], function() {
         Route::get('/create', [App\Http\Controllers\itemController::class, 'create']);
         Route::post('/update/{id}', [App\Http\Controllers\itemController::class, 'update']);
         Route::post('/edit/{id}', [App\Http\Controllers\itemController::class, 'edit']);
-        Route::post('/delete/{id}', [App\Http\Controllers\itemController::class, 'delete']);
-        Route::post('/destroy/{id}', [App\Http\Controllers\itemController::class, 'destroy']);
+        Route::post('/delete', [App\Http\Controllers\itemController::class, 'delete']);
+        Route::post('/destroy/{request}', [App\Http\Controllers\itemController::class, 'destroy']);
         Route::get('/list', [App\Http\Controllers\itemController::class, 'show']);
         Route::post('/store', [App\Http\Controllers\itemController::class, 'store']);
     });

@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Services;
+
 use App\Models\Item;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -9,99 +11,102 @@ use App\Jobs\ProcessItem;
 use App\helper\HeapSort;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-class anItem{
+
+class anItem
+{
 
     private $name = "";
     private $price = 0;
-    private $userId = -1;
+    private $user_id = -1;
+    private $parameters = [
+        'name' => '',
+        'price' => 0,
+        'user_id' => -1
+        ];
 
     public function __construct($request = null)
     {
-        $this->name = $request['name'];
-        $this->price = $request['price'];
-        $this->userId = Auth::user()->id;
+        if ($request != null) {
+            $this->parameters = ['name'=>$request['name'], 'price' =>$request['price']];
+        }
+        $this->parameters['user_id'] = Auth::user()->id;
     }
 
-   
+
     public function Create()
     {
-        
-        // $doesItemExists = Item::where([
-        //     ['name','like','%'.$this->name]
-        // ])->first();
 
-        //dd(Carbon::now());
         $newItem = null;
+
         DB::beginTransaction();
         $doesItemExists = Item::lockForUpdate()->firstOrNew(
-            ['name' => $this->name]
+            ['name' =>  $this->parameters['name']]
         );
         $newItem = ($doesItemExists->exists)
-        ?anItem::Update($doesItemExists->id)
-        :Item::create(['user_id'=> $this->userId, 'name'=> $this->name, 'price'=> $this->price]);
+            ? anItem::Update($doesItemExists->id)
+            : Item::create( $this->parameters);
         DB::commit();
-
-        // $newItem = ($doesItemExists === null) 
-        // ? Item::create(['user_id'=> $this->userId, 'name'=> $this->name, 'price'=> $this->price]) 
-        // : anItem::Update($doesItemExists->id);
-        // $newItem->save();
-
-
-       // ProcessItem::dispatch($newItem);
         event(new CatchChangesEvent());
-        
+
         anItem::checkIfItemIsCheapest($newItem);
 
-        
-        
 
         return $newItem;
-        // return null;
     }
 
     public function Update($id)
     {
         $item = Item::find($id);
-        if((string)$item->updated_at != (string)Carbon::now() && $item->price != $this->price){
-            $item->Update(['price'=> $this->price,'user_id'=> $this->userId]);
+        if ((string)$item->updated_at != (string)Carbon::now() && $item->price !=  $this->parameters['price']) {
+            $item->Update( $this->parameters);
         }
         return $item;
     }
-    public function Destroy($id)
+    public function CasualUpdate($id)
     {
         $item = Item::find($id);
-        $item->desroy();
+        if ($item->user_id ==  $this->parameters['user_id']){
+            $item->Update( $this->parameters);
+        }
+
         return $item;
     }
+    public function delete($ids)
+    {
+
+        if (count($ids) > 0) {
+            $id = array_pop($ids);
+            $item = Item::find($id);
+            if ($item->user_id ==  $this->parameters['user_id']) {
+                $item->delete();
+                anItem::delete($ids);
+            }
+        } else
+            return;
+    }
+
 
     public function checkIfItemIsCheapest($newItem)
     {
-        
         $firstItem = (new HeapSort)->GetFirst();
-        if( $firstItem[0]->id == $newItem->id){
+        if ($firstItem[0]->id == $newItem->id) {
             event(new CreatedNewCheapestItem($newItem));
         }
-        
-
     }
-
 }
 
 class ItemFactory
 {
-  
-
-    public static function create( $request)
+    public static function create($request)
     {
         return (new anItem($request))->Create();
     }
-    public static function update(Request $request, $id)
+    public static function update( $request, $id)
     {
-        return (new anItem($request))->Update($id);
+        return (new anItem($request))->CasualUpdate($id);
     }
-    public static function destroy($id)
+    public static function destroy($ids)
     {
-        return (new anItem())->Destroy($id);
+        return (new anItem())->delete($ids);
     }
-
 }

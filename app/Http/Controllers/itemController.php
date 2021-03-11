@@ -18,81 +18,72 @@ use App\Jobs\ProcessItem;
 
 class itemController extends Controller
 {
-    
-   
 
-    
+
+
+
     public function index()
     {
-       
-        return (new ViewTemplateHelper)->getAllItemTable('/home','Global item list');
+
+        return (new ViewTemplateHelper)->getAllItemTable('/home', 'Global item list');
     }
 
-   
+
     public function create()
     {
-        return (new ViewTemplateHelper)->getItemForm('/item/store/', 'itemform',-1);
+        return (new ViewTemplateHelper)->getItemForm('/item/store/', 'itemform', -1);
     }
 
-   
+
     public function store(Request $request)
     {
-     
-        
+
+
         ProcessItem::dispatch($request->all());
- 
+
         return redirect()->to('/home');
     }
 
-    
+
     public function show()
     {
-        
-       $id = Auth::user()->id;
-        return (new ViewTemplateHelper)->itemByIndexTable('/home','Your item list',$id);
 
-
+        $id = Auth::user()->id;
+        return (new ViewTemplateHelper)->itemByIndexTable('/home', 'Your item list', $id);
     }
 
 
     public function topThree()
     {
-        
-        return (new ViewTemplateHelper)->itemTop3('/home','Top 3');
 
-
+        return (new ViewTemplateHelper)->itemTop3('/home', 'Top 3');
     }
 
-   
+
     public function edit($id)
     {
-    
-        return (new ViewTemplateHelper)->getItemForm('/item/update/'.$id, 'itemform',$id);
+
+        return (new ViewTemplateHelper)->getItemForm('/item/update/' . $id, 'itemform', $id);
     }
 
 
-    public function markNotification(){
+    public function markNotification()
+    {
 
-        
+
         auth()->user()->unreadNotifications->markAsRead();
     }
-    
+
     public function update(Request $request, $id)
     {
-        
-        Item::find($id)->Update($request->all());
+
+        ItemFactory::update($request->all(),$id);
         return redirect()->to('/home');
     }
 
-    public function delete($id){
-
-        return view('confirmDelete',['item' => Item::find($id),  'userid'=> $id]);
-    }
-
-   
-    public function destroy($id)
+    public function delete(Request $request)
     {
-        Item::find($id)->delete();
+        ItemFactory::destroy($request->checkToDelete);
         return redirect()->to('/home');
     }
 }
