@@ -1,20 +1,15 @@
 <?php
 
-namespace app\helper;
-
+namespace app\Services;
 use App\Models\Item;
 
 
 class HeapSort
 {
-
-
     public function GetFirst(){
         $collection = HeapSort::sort();
         return $collection->slice(0,1);
     }
-
-
 
     public function sort()
     {
@@ -36,7 +31,6 @@ class HeapSort
 
           return $collection;
     }
-
 
     private function heapify(&$collection, $n, $i)
     {

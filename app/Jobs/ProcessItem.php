@@ -9,7 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Item;
-use App\Services\ItemFactory;
+use App\Services\Factory\ItemFactory;
 class ProcessItem implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -17,13 +17,11 @@ class ProcessItem implements ShouldQueue
     public $item;
     public function __construct($item)
     {
-        //dd('controller');
         $this->item =  $item;
     }
 
     public function handle()
     {
-      
         ItemFactory::create($this->item);
     }
 }

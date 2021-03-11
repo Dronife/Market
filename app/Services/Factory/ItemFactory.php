@@ -1,29 +1,24 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Factory;
 
 use App\Models\Item;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 use App\Events\CreatedNewCheapestItem;
 use App\Events\CatchChangesEvent;
-use App\Jobs\ProcessItem;
-use App\helper\HeapSort;
+use App\Services\HeapSort;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class anItem
 {
-
-    private $name = "";
-    private $price = 0;
-    private $user_id = -1;
+    //Local variables
     private $parameters = [
         'name' => '',
         'price' => 0,
         'user_id' => -1
         ];
-
+    //Constructor to set local variables
     public function __construct($request = null)
     {
         if ($request != null) {
@@ -32,22 +27,26 @@ class anItem
         $this->parameters['user_id'] = Auth::user()->id;
     }
 
-
+    //Create event
     public function Create()
     {
-
-        $newItem = null;
-
+        //Like in parallel programming there are lock
+        //there is an lock dedicated to databases
+        //so there would not be any race conditions
         DB::beginTransaction();
+        
         $doesItemExists = Item::lockForUpdate()->firstOrNew(
             ['name' =>  $this->parameters['name']]
         );
         $newItem = ($doesItemExists->exists)
             ? anItem::Update($doesItemExists->id)
             : Item::create( $this->parameters);
+        //Unlock the access to database
         DB::commit();
+        
+        //lets catch an event that new item has been add/updated
         event(new CatchChangesEvent());
-
+        //Lets check is item is cheapest
         anItem::checkIfItemIsCheapest($newItem);
 
 
@@ -57,23 +56,30 @@ class anItem
     public function Update($id)
     {
         $item = Item::find($id);
+        //Lets say if there are few people who want to add new item with same exact
+        //price at the same time
+        //By the project task: The first person who submited will succeed
         if ((string)$item->updated_at != (string)Carbon::now() && $item->price !=  $this->parameters['price']) {
             $item->Update( $this->parameters);
         }
         return $item;
     }
+    
     public function CasualUpdate($id)
     {
+        
         $item = Item::find($id);
+        //Check if current user can update
         if ($item->user_id ==  $this->parameters['user_id']){
             $item->Update( $this->parameters);
         }
 
         return $item;
     }
+
     public function delete($ids)
     {
-
+        //deletetion on recursion
         if (count($ids) > 0) {
             $id = array_pop($ids);
             $item = Item::find($id);
@@ -88,6 +94,7 @@ class anItem
 
     public function checkIfItemIsCheapest($newItem)
     {
+        //Run heapsort and get first cheapest element and check if the item which user add is same
         $firstItem = (new HeapSort)->GetFirst();
         if ($firstItem[0]->id == $newItem->id) {
             event(new CreatedNewCheapestItem($newItem));

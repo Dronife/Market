@@ -123,36 +123,7 @@
     <script src="{{asset('https://js.pusher.com/7.0/pusher.min.js')}}"></script>
     <script src="{{asset('plugin/js/pusher/ReloadData.js')}}"></script>
     <script > Reload('cheapesItemCreatedChannel','cheapestItem','/item/notifications','.notifications'); </script>
-
     
-
-    <script type="text/javascript">
-        $(document).ready(function() {
-
-            
-            function sendMarkRequest(id = null) {
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-
-                $.ajax({
-                    url: '/item/markAsRead/',
-                    method: 'POST',
-                });
-            }
-
-
-            $(function() {
-                $('.mark-as-read').click(function() {
-                    sendMarkRequest();
-                })
-            });
-
-        });
-    </script>
-
 
 </body>
 

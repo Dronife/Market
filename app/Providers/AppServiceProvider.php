@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Notification;
 use App\Models\User;
 use App\Jobs\ProcessItem;
 use Illuminate\Support\Facades\Auth;
+use App\Interfaces\TableInterface;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,7 +26,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bindMethod([ProcessItem::class, 'handle'], function ($job, $app) {
             return $job->handle();
         });
-
     }
 
     /**

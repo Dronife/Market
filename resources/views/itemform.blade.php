@@ -10,13 +10,8 @@
                 <div class="card-body">
                     <form action="{{ url($redirect) }}" method="post" enctype="multipart/form-data">
                         @csrf
-
-                                @include('layouts.item')
-
-
-                       
+                        @include('layouts.item')
                         <input type="submit" class="btn btn-success float-right">
-                     
                     </form>
                 </div>
             </div>

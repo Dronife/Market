@@ -23,19 +23,12 @@ class EventServiceProvider extends ServiceProvider
         CreatedNewCheapestItem::class => [
             SendCheapestItemNotification::class,
         ],
-
-        
     ];
-
-    
-
-    
     public function boot()
     {
         
     }
-
-
+    
     public function shouldDiscoverEvents()
     {
         return true;
