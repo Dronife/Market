@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 use App\helper\ViewTemplateHelper;
 use App\Notifications\ItemCreated;
+use App\Jobs\ProcessItem;
 
 class itemController extends Controller
 {
@@ -37,8 +38,8 @@ class itemController extends Controller
     public function store(Request $request)
     {
      
-        ItemFactory::create($request);
-       
+        
+        ProcessItem::dispatch($request->all());
  
         return redirect()->to('/home');
     }

@@ -103,8 +103,8 @@ class itemForm extends ItemViewHelper
     public function getView()
     {
       
-        //return view($this->view,['redirect' => $this->redirect, 'name' => $this->name, 'price'=>$this->price, 'id' => $this->id]);
-        return view($this->view,['redirect' => $this->redirect, 'name' => 'fawfe', 'price'=>5315, 'id' => $this->id]);
+        return view($this->view,['redirect' => $this->redirect, 'name' => $this->name, 'price'=>$this->price, 'id' => $this->id]);
+       
 
     }
 

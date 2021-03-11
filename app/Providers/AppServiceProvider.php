@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Notification;
 use App\Models\User;
+use App\Jobs\ProcessItem;
 use Illuminate\Support\Facades\Auth;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +20,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+
+        $this->app->bindMethod([ProcessItem::class, 'handle'], function ($job, $app) {
+            return $job->handle();
+        });
+
     }
 
     /**
