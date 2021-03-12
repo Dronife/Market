@@ -7,6 +7,6 @@
 
 <div class="form-group">
 
-    <input class="form-control" name="price" type="text" placeholder="Price" value='@if($price != null) {{$price}} @endif'>
+    <input class="form-control" name="price" min="0" type="number" step="0.01" placeholder="Price" value='@if($price != null) {{$price}} @endif'>
 
 </div>
