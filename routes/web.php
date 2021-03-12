@@ -26,14 +26,20 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::group(['middleware' => 'auth'], function() {
-    Route::resource('item',itemController::class);
     Route::group(['prefix' => 'item'], function() {
+        Route::get('/notifications', function () {return view('layouts.notification');});
+        Route::get('/getTables', function () {return view('layouts.ItemList');});
         Route::post('/markAsRead', [App\Http\Controllers\itemController::class, 'markNotification']);
+        Route::get('/top3', [App\Http\Controllers\itemController::class, 'topThree']);
+        Route::get('/create', [App\Http\Controllers\itemController::class, 'create']);
         Route::post('/update/{id}', [App\Http\Controllers\itemController::class, 'update']);
         Route::post('/edit/{id}', [App\Http\Controllers\itemController::class, 'edit']);
         Route::post('/delete', [App\Http\Controllers\itemController::class, 'delete']);
+        Route::post('/destroy/{request}', [App\Http\Controllers\itemController::class, 'destroy']);
+        Route::get('/list', [App\Http\Controllers\itemController::class, 'show']);
         Route::post('/store', [App\Http\Controllers\itemController::class, 'store']);
     });
+    });
     Route::get('/home', [App\Http\Controllers\itemController::class, 'index'])->name('home');
-});
+
 

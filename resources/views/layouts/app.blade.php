@@ -95,7 +95,7 @@
         @if($notifications != null)
         <div class="row justify-content-center notifications">
             @include('layouts.notification')
-        </div>
+            </div>
         @endif
 
 
