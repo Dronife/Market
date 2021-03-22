@@ -1,3 +1,24 @@
+## Market Site
+**About the site:**<br> You can sell items<br><br>
+**Functionality:** 
+1. Requirements for website:
+    * Only registered user can place items
+    * If user wants to place an item and if it already exists in database it should change price and the owner of that item.
+    * If one of the item is cheapest it will notify all users
+    * If there is a situation where few customers tries to place same item with same price<br>
+    only first customer succeeds
+    * Show top 3 cheapest items using heapsort
+    * For deleting user items it needs to use recursion
+    * Basic CRUD
+    * Everything should work in real time
+2. Technologies to use:
+    * Factory Patterns
+    * Queues
+    * Listeners
+    * Web Sockets
+    * Sorting
+    * Recursion
+##
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
 <p align="center">
